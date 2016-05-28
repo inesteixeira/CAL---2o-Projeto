@@ -1,0 +1,10 @@
+Aliados;481;113;
+Bolhao;716;50;
+Livraria Lello;192;290;
+Clerigos;246;359;
+Sao Bento;524;392;
+Palacio da Bolsa;196;683;
+Igreja Santa Clara;600;585;
+Rivoli;624;264;
+Se do Porto;448;611;
+Ribeira;578;721;
