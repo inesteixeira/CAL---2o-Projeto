@@ -6,7 +6,6 @@ static int id = 1;
 
 Bus::Bus() {
 	this->numMaxPassengers = numMaxPassengers++;
-	this->id = id++;
 }
 
 Bus::Bus(int busNumber) {

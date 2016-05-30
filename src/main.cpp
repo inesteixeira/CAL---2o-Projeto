@@ -189,33 +189,58 @@ void readUsers(vector<POI> &pointsToVisit, vector<Passenger> &passengers,GraphVi
 	}
 }
 /**
+ * @brief Updates the file BusPassengers so the passengers in the buses change.
+ */
+void writeToPassengers(vector<Bus> &fleet){
+
+	fstream f;
+	f.open("BusPassengers.txt", std::fstream::out | std::fstream::trunc);
+		for(unsigned int i = 0; i< fleet.size(); i++){
+			f <<  i+1 <<";";
+			for(unsigned int j= 0; j < fleet[i].getPassengers().size(); j++){
+				f << fleet[i].getPassengers()[j].getName() <<";";
+			}
+			f << "." <<";"<<  endl;
+		}
+
+
+	 f.close();
+
+
+}
+/**
  * @brief Reads the file with the different buses and the routes they are going to do.
  */
 
 void readBusRoutes (vector<Bus> &fleet ){
 	string line;
 	ifstream myfile("BusRoutes.txt");
-	if(myfile.is_open()){
-			while(getline(myfile, line)){
-				stringstream ss (line);
-				string poiName, poiName1;
-				string id;
-				getline(ss,id,';');
-				double id1 = atof(id.c_str());
 
-				getline(ss,poiName,';');
-				POI poi(poiName,true);
+	if (myfile.is_open()) {
+		while (getline(myfile, line)) {
+
+			stringstream ss(line);
+			string poiName, poiName1;
+			string id;
+			getline(ss, id, ';');
+			double id1 = atof(id.c_str());
+			getline(ss, poiName, ';');
+			POI poi(poiName, true);
+
+			fleet[id1-1].addPOI(poi);
+
+			do {
+				getline(ss, poiName1,';');
+				POI poi(poiName1, true);
 				fleet[id1-1].addPOI(poi);
-				do{
-					getline(ss,poiName1,';');
-					POI poi(poiName1,true);
-					fleet[id1-1].addPOI(poi);
 
-				}while(poiName1 != "Aliados");
+				cout << poiName1 << endl;
+			} while (poiName1 != "Aliados");
+		}
 
+	}
 
-			}
-			}
+	myfile.close();
 }
 /**
  * @brief Reads the file with the existent passengers in the different buses.
@@ -232,17 +257,17 @@ void readBusPassengers(vector<Bus> &fleet ){
 			double id1 = atof(id.c_str());
 			Bus bus(id1);
 			while(name != "."){
-			getline(ss,name,';');
-			if(name == ".")
-				break;
-			Passenger passenger(name);
-			bus.addPassenger(passenger);
+				getline(ss,name,';');
+				if(name == ".")
+					break;
+				Passenger passenger(name);
+				bus.addPassenger(passenger);
 			}
 			fleet.push_back(bus);
 
 		}
 
-		}
+	}
 
 }
 /**
@@ -298,6 +323,7 @@ void newPassenger(vector<Passenger> &passengers, vector<POI> &points, vector<POI
 			Passenger p1(name);
 			passengers.push_back(p1);
 			fleet[index].addPassenger(p1);
+
 		}
 	}
 
@@ -317,6 +343,7 @@ void newPassenger(vector<Passenger> &passengers, vector<POI> &points, vector<POI
 			cout << passengers[i].getName() << endl;
 		}
 	}
+	writeToPassengers(fleet);
 
 }
 
@@ -360,10 +387,7 @@ void currentRoutes(vector<Bus> &fleet){
 	}
 }
 
-void writeToFile(vector<Bus> &fleet){
 
-
-}
 
 /**
  * @brief displays all the points of interest to visit.
@@ -435,17 +459,17 @@ int menus(vector<Passenger> &passengers, vector<POI> &points, vector<POI> &point
 	cout << " 2- Ver passageiros existentes." << endl;
 	cout << " 3- Ver Pontos de Interesse existentes." << endl;
 	//cout << " 4- Ver Pontos de Interesse a visitar." << endl;
-	cout << " 5- Calcular caminho mais curto." << endl;
-	cout << " 6- Ver Rotas existentes." << endl;
+	//cout << " 4- Calcular caminho mais curto." << endl;
+	cout << " 4- Ver Rotas existentes." << endl;
 	cout << " 9- Sair." << endl;
 	cin >> next;
 
 	if(next ==1) newPassenger(passengers,points,pointsToVisit,gv, fleet);
 	if(next ==2) currentPassengers(fleet);
 	if(next ==3) currentPOI(points);
-	if(next ==4) visitPoints(pointsToVisit);
-	if(next ==5) shortestPath(pointsToVisit,points, graph, gv);
-	if(next ==6) currentRoutes(fleet);
+	//if(next ==4) visitPoints(pointsToVisit);
+	//if(next ==5) shortestPath(pointsToVisit,points, graph, gv);
+	if(next ==4) currentRoutes(fleet);
 	if(next ==9) return -1;
 
 }
@@ -469,7 +493,6 @@ int main() {
 	readUsers(pointsToVisit, passengers,*gv, fleet);
 	readBusPassengers(fleet);
 	readBusRoutes(fleet);
-	writeToFile(fleet);
 	updateEdges(*gv);
 
 
