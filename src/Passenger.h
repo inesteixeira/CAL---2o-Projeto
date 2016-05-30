@@ -27,6 +27,9 @@ public:
 	 * @brief Passenger constructor with the neccessary parameters.
 	 */
 	Passenger(string name);
+	/**
+	 * @brief Passenger constructor with the neccessary parameters.
+	 */
 	Passenger(string name,string pointOfInterest);
 	/**
 	 * @brief returns the name of the passenger.
@@ -43,11 +46,6 @@ public:
 	/**
 	 * @brief adds a points of interest to the vector of POI that the passengers wants to see.
 	 */
-//	void addPointOfInterest(POI pointOfInterest);
-//	/**
-//	 * @brief removes a POI from the vector.
-//	 */
-//	void removePointOfInterest(POI pointOfInterest);
 
 };
 

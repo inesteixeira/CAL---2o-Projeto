@@ -1,5 +1,5 @@
-Ines;Se do Porto;2
-Tomas;Ribeira;1
-Joao;Palacio da Bolsa;3
-Ana;Rivoli;2
-Pedro;Livraria Lello;3
+Ines;Se do Porto;2;
+Tomas;Ribeira;1;
+Joao;Palacio da Bolsa;3;
+Ana;Rivoli;2;
+Pedro;Livraria Lello;3;

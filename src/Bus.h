@@ -39,13 +39,14 @@ public:
 	/**
 	 * @brief returns the number of passengers.
 	 */
-
 	int getNumPassengers() const;
 	/**
 	 * @brief updates the number of passengers.
 	 */
 	int getId() const ;
-
+	/**
+	 * @brief updates the number of passengers.
+	 */
 	void setNumPasengers(int numPassengers);
 	/**
 	 * @brief adds a passenger to the bus.
@@ -59,8 +60,14 @@ public:
 	 * @brief returns the vector of the passengers.
 	 */
 	vector<Passenger> getPassengers() const;
-
+	/**
+	 * @brienf adds a POI to the vector.
+	 */
 	void addPOI(POI poi);
+	/**
+	 * @brief returns the vector of POIs.
+	 */
+	vector<POI> getPOI() const;
 };
 
 #endif /* BUS_H_ */

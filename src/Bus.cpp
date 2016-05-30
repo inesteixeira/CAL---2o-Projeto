@@ -9,7 +9,7 @@ Bus::Bus() {
 	this->id = id++;
 }
 
-Bus::Bus(int numMaxPassengers) {
+Bus::Bus(int busNumber) {
 	this->numMaxPassengers = numMaxPassengers;
 	this->numPassengers = 0;
 
@@ -20,6 +20,9 @@ vector<Passenger> Bus::getPassengers() const {
 	return passengers;
 }
 
+vector<POI> Bus::getPOI()const{
+	return POIs;
+}
 int Bus::getId() const {
 	return id;
 }
@@ -29,6 +32,10 @@ void Bus::addPassenger(Passenger passenger) {
 	numPassengers++;
 	string tmp;
 
+}
+
+void Bus::addPOI(POI poi){
+	POIs.push_back(poi);
 }
 
 int Bus::getNumMaxPassengers() const {
@@ -53,6 +60,3 @@ void Bus::setNumPasengers(int newPassengers) {
 //		}
 //	}
 //}
-void Bus::addPOI(POI poi){
-	POIs.push_back(poi);
-}

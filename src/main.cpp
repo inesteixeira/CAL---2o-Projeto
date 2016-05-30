@@ -62,33 +62,7 @@ int exactMatch(const string &text, const string pattern) {
 	return num;
 }
 
-unsigned int editDistance(const string &pattern, const string &text) {
-	unsigned int distance[text.length()+1];
-	unsigned int oldDistance, newDistance;
 
-	for (unsigned int i = 0; i <= text.length(); i++)
-		distance[i] = i;
-
-	for (unsigned int i = 1; i <= pattern.length(); i++) {
-		oldDistance = distance[0];
-		distance[0] = i;
-
-		for (unsigned int j = 1; j <= text.length(); j++) {
-			//Check is not case sensitive
-			if (tolower(pattern[i-1]) == tolower(text[j-1]))
-				newDistance = oldDistance;
-			else {
-				newDistance = min(oldDistance, min(distance[j], distance[j-1]));
-				newDistance++;
-			}
-
-			oldDistance = distance[j];
-			distance[j] = newDistance;
-		}
-	}
-
-	return distance[text.length()];
-}
 
 int lookForRoute(string filename, string name){
 
@@ -115,7 +89,6 @@ int lookForRoute(string filename, string name){
 
 	if(i!=0){
 		i--;
-		//fleet[i].push_back(Passanger p1);
 	}
 
 	return i;
@@ -156,6 +129,7 @@ void readDistances(Graph &graph,vector<POI> &points,GraphViewer &gv){
 			}
 		}
 	}
+
 	gv.rearrange();
 }
 
@@ -192,8 +166,7 @@ void readPointsOfInterest(vector<POI> &points, Graph &graph, GraphViewer &gv){
 }
 
 /**
- * @brief Reads the passengers with the points of interest they want to visit from a file and marks those
- * points to visit them in the graph.
+ * @brief Reads the passengers with the points of interest they want to visit and the bus they are going to take.
  */
 void readUsers(vector<POI> &pointsToVisit, vector<Passenger> &passengers,GraphViewer &gv, vector<Bus> &fleet){
 	string line;
@@ -207,19 +180,16 @@ void readUsers(vector<POI> &pointsToVisit, vector<Passenger> &passengers,GraphVi
 			getline(ss,poiName, ';');
 			getline(ss,bus,';');
 			int busNumber = atoi(bus.c_str());
-			Bus newBus(busNumber);
-			fleet.push_back(newBus);
 			POI poi (poiName,true);
 			pois.push_back(poi);
 			Passenger p(user,poiName);
 			pointsToVisit.push_back(poi);
 			passengers.push_back(p);
-			fleet[busNumber].getPassengers().push_back(p);
 		}
 	}
 }
 /**
- * @brief verify from all the existent points of interest each ones are to visit.
+ * @brief Reads the file with the different buses and the routes they are going to do.
  */
 
 void readBusRoutes (vector<Bus> &fleet ){
@@ -228,29 +198,32 @@ void readBusRoutes (vector<Bus> &fleet ){
 	if(myfile.is_open()){
 			while(getline(myfile, line)){
 				stringstream ss (line);
-				string poiName;
+				string poiName, poiName1;
 				string id;
 				getline(ss,id,';');
 				double id1 = atof(id.c_str());
-				Bus bus(id1);
+
 				getline(ss,poiName,';');
 				POI poi(poiName,true);
-				bus.addPOI(poi);
+				fleet[id1-1].addPOI(poi);
 				do{
-					getline(ss,poiName,';');
-					POI poi(poiName,true);
-					bus.addPOI(poi);
+					getline(ss,poiName1,';');
+					POI poi(poiName1,true);
+					fleet[id1-1].addPOI(poi);
 
-				}while(poiName != "Aliados");
+				}while(poiName1 != "Aliados");
 
-				fleet.push_back(bus);
+
 			}
 			}
 }
-
-void readBusPassengers(vector<Bus> &fleet ){string line;
-ifstream myfile("BusPassengers.txt");
-if(myfile.is_open()){
+/**
+ * @brief Reads the file with the existent passengers in the different buses.
+ */
+void readBusPassengers(vector<Bus> &fleet ){
+	string line;
+	ifstream myfile("BusPassengers.txt");
+	if(myfile.is_open()){
 		while(getline(myfile, line)){
 			stringstream ss (line);
 			string name;
@@ -259,18 +232,12 @@ if(myfile.is_open()){
 			double id1 = atof(id.c_str());
 			Bus bus(id1);
 			while(name != "."){
-
-
 			getline(ss,name,';');
 			if(name == ".")
 				break;
 			Passenger passenger(name);
 			bus.addPassenger(passenger);
-			cout << name << endl;
 			}
-
-
-
 			fleet.push_back(bus);
 
 		}
@@ -278,21 +245,41 @@ if(myfile.is_open()){
 		}
 
 }
-void checkVisitedPoints(vector<POI> &points, vector<POI> &pointsToVisit,GraphViewer &gv){
-	for(unsigned int i = 0; i < points.size(); i++){
-		for(unsigned int j = 0; j< pointsToVisit.size(); j++){
-			if(points[i].getName() == pointsToVisit[j].getName() && points[i].getVisit() == false){
-				points[i].setVisit(true);
-				gv.setVertexColor(i,"green");
-			}
-		}
-	}
+/**
+ * @brief changes the color of the edges that are going to get accessed from the different buses.
+ */
+
+void updateEdges(GraphViewer &gv){
+
+
+	gv.setEdgeColor(2, "red");
+	gv.setEdgeColor(12, "red");
+	gv.setEdgeColor(19, "red");
+	gv.setEdgeColor(18, "red");
+	gv.setEdgeColor(13, "red");
+
+	gv.setEdgeColor(0, "green");
+	gv.setEdgeColor(5, "green");
+	gv.setEdgeColor(4, "green");
+	gv.setEdgeColor(9, "green");
+	gv.setEdgeColor(20, "green");
+	gv.setEdgeColor(10, "green");
+	gv.setEdgeColor(3, "green");
+
+	gv.setEdgeColor(1, "blue");
+	gv.setEdgeColor(6, "blue");
+	gv.setEdgeColor(14, "blue");
+	gv.setEdgeColor(16, "blue");
+	gv.setEdgeColor(22, "blue");
+
+
 	gv.rearrange();
 }
 /**
- * @brief Creates a new passenger with a vector of points of interest to visit.
+ * @brief Creates a new passenger where he decides if he wants to join a bus to see a specific point of interest or
+ * to be near a friend.
  */
-void newPassenger(vector<Passenger> &passengers, vector<POI> &points, vector<POI> &pointsToVisit, GraphViewer &gv){
+void newPassenger(vector<Passenger> &passengers, vector<POI> &points, vector<POI> &pointsToVisit, GraphViewer &gv, vector<Bus> &fleet){
 	string name, poiName, friendName;
 	int numOption, index;
 	vector<POI> pois;
@@ -308,7 +295,9 @@ void newPassenger(vector<Passenger> &passengers, vector<POI> &points, vector<POI
 		index = lookForRoute("BusPassengers.txt", friendName);
 
 		if(index!=-1){
-			passengers.push_back(name);
+			Passenger p1(name);
+			passengers.push_back(p1);
+			fleet[index].addPassenger(p1);
 		}
 	}
 
@@ -318,7 +307,10 @@ void newPassenger(vector<Passenger> &passengers, vector<POI> &points, vector<POI
 		index = lookForRoute("BusRoutes.txt", poiName);
 
 		if(index!=-1){
-			passengers.push_back(name);
+			Passenger p1(name);
+			passengers.push_back(p1);
+			fleet[index].addPassenger(p1);
+
 		}
 
 		for(unsigned int i=0; i < passengers.size(); i++){
@@ -326,39 +318,21 @@ void newPassenger(vector<Passenger> &passengers, vector<POI> &points, vector<POI
 		}
 	}
 
-
-
-	/*
-	for(unsigned int i = 0; i < points.size(); i++){
-		cout << points[i].getName() << " " ;
-	}
-	cout << endl;
-	for(int j = 0; j < numPois; j++){
-		cin >> poi;
-		for(unsigned int i = 0; i < points.size(); i++){
-			if(points[i].getName() == poi ){
-				POI newPoi(poi,true);
-				pois.push_back(newPoi);
-				pointsToVisit.push_back(newPoi);
-				gv.setVertexColor(i,"green");
-				gv.rearrange();
-			}
-		}
-	} */
-
-	//Passenger newPass(name,newPoi);
-	//passengers.push_back(newPass);
 }
 
 /**
- * @brief displays all the passengers in the bus.
+ * @brief displays all the passengers in the diferent buses.
  */
-void currentPassengers(vector<Passenger> &passengers){
-	cout <<"Passageiros existentes: " ;
-	for(unsigned int i= 0; i < passengers.size(); i++){
-		cout << passengers[i].getName() << "; ";
+void currentPassengers(vector<Bus> &fleet){
+	cout <<"Passageiros existentes: " << endl;
+	for(unsigned int i = 0; i< fleet.size(); i++){
+		cout << "Bus " << i+1 <<": ";
+		for(unsigned int j= 0; j < fleet[i].getPassengers().size(); j++){
+			cout << fleet[i].getPassengers()[j].getName() <<"; ";
+		}
+		cout << endl;
 	}
-	cout << endl;
+
 }
 
 /**
@@ -371,6 +345,22 @@ void currentPOI(vector<POI> &points){
 	}
 	cout << endl;
 }
+
+/**
+ * @brief displays the existent routes.
+ */
+
+void currentRoutes(vector<Bus> &fleet){
+	for(unsigned int i = 0; i < fleet.size(); i++){
+		cout << "Bus " << i+1<<": ";
+		for(unsigned int j = 0; j < fleet[i].getPOI().size();j++){
+			cout << fleet[i].getPOI()[j].getName() << "; ";
+		}
+		cout << endl;
+	}
+}
+
+
 
 /**
  * @brief displays all the points of interest to visit.
@@ -428,35 +418,37 @@ void createGraphViewer(GraphViewer &gv){
 	gv.setBackground("map.png");
 	gv.createWindow(810,779);
 	gv.defineEdgeColor("black");
-	gv.defineVertexColor("blue");
+	gv.defineVertexColor("black");
 	gv.rearrange();
 }
 
 /**
  * @brief displays the menu with the several options available to run in the program.
  */
-int menus(vector<Passenger> &passengers, vector<POI> &points, vector<POI> &pointsToVisit, Graph &graph,GraphViewer &gv){
+int menus(vector<Passenger> &passengers, vector<POI> &points, vector<POI> &pointsToVisit, Graph &graph,GraphViewer &gv, vector<Bus> &fleet){
 	int next;
 	cout << "O que deseja fazer?" << endl;
 	cout << " 1- Acrescentar passageiros." << endl;
 	cout << " 2- Ver passageiros existentes." << endl;
 	cout << " 3- Ver Pontos de Interesse existentes." << endl;
-	cout << " 4- Ver Pontos de Interesse a visitar." << endl;
+	//cout << " 4- Ver Pontos de Interesse a visitar." << endl;
 	cout << " 5- Calcular caminho mais curto." << endl;
+	cout << " 6- Ver Rotas existentes." << endl;
 	cout << " 9- Sair." << endl;
 	cin >> next;
 
-	if(next ==1) newPassenger(passengers,points,pointsToVisit,gv);
-	if(next ==2) currentPassengers(passengers);
+	if(next ==1) newPassenger(passengers,points,pointsToVisit,gv, fleet);
+	if(next ==2) currentPassengers(fleet);
 	if(next ==3) currentPOI(points);
 	if(next ==4) visitPoints(pointsToVisit);
 	if(next ==5) shortestPath(pointsToVisit,points, graph, gv);
+	if(next ==6) currentRoutes(fleet);
 	if(next ==9) return -1;
 
 }
 
 int main() {
- /*
+
 	Bus bus = Bus();
 	Graph graph = Graph();
 	POI poi = POI();
@@ -467,20 +459,22 @@ int main() {
 	vector<POI> pointsToVisit;
 	vector<Bus> fleet;
 
+
 	createGraphViewer(*gv);
 	readPointsOfInterest(points, graph, *gv);
 	readDistances(graph,points,*gv);
 	readUsers(pointsToVisit, passengers,*gv, fleet);
-	checkVisitedPoints(points,pointsToVisit,*gv);
+	readBusPassengers(fleet);
+	readBusRoutes(fleet);
+	updateEdges(*gv);
 
 
 	do{
 	}while
-		(menus(passengers,points,pointsToVisit, graph,*gv)!= -1);
+		(menus(passengers,points,pointsToVisit, graph,*gv, fleet)!= -1);
 	cout <<"Exit!" << endl;
-	exit(0);*/
-	vector<Bus> fleet;
-	readBusPassengers(fleet);
+	exit(0);
+
 
 
 }

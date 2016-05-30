@@ -2,7 +2,7 @@ Aliados;Bolhao;1.3;
 Aliados;Livraria Lello;2.4;
 Aliados;Sao Bento;0.950;
 Sao Bento;Aliados;0.600; 
-Sao Bento;Rivoli; 0.450;
+Rivoli;Sao Bento;0.450;
 Bolhao;Rivoli;0.450;
 Livraria Lello;Clerigos;0.950;
 Rivoli;Igreja Santa Clara;0.900;
