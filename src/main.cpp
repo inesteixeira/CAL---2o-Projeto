@@ -90,12 +90,12 @@ unsigned int editDistance(const string &pattern, const string &text) {
 	return distance[text.length()];
 }
 
-int lookForRoute(string filename, string friendName){
+int lookForRoute(string filename, string name){
 
 	ifstream fich(filename.c_str());
 	string line;
 	bool found= false;
-	int i=0;
+	int i=1;
 	if(!fich)
 	{
 		cout << "erro\n";
@@ -105,7 +105,7 @@ int lookForRoute(string filename, string friendName){
 	while(!fich.eof() && found != true){
 		getline(fich, line);
 
-		if(exactMatch(line, "Ribeira") !=0)
+		if(exactMatch(line, name) !=0)
 		{
 			found=true;
 		}
@@ -258,10 +258,14 @@ void newPassenger(vector<Passenger> &passengers, vector<POI> &points, vector<POI
 	if(numOption==2){
 		cout << "Indique o nome do Ponto de Interesse: " << endl;
 		cin >> poiName;
-		index = lookForRoute("BusRoutes.txt", friendName);
+		index = lookForRoute("BusRoutes.txt", poiName);
 
 		if(index!=-1){
 			passengers.push_back(name);
+		}
+
+		for(unsigned int i=0; i < passengers.size(); i++){
+			cout << passengers[i].getName() << endl;
 		}
 	}
 

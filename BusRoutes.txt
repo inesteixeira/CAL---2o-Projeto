@@ -1,3 +1,3 @@
-1;Aliados;Sao Bento;Igreja Santa Clara;Ribeira;Igreja Santa Clara; Aliados;
+1;Aliados;Sao Bento;Igreja Santa Clara;Ribeira;Igreja Santa Clara;Aliados;
 2;Aliados;Bolhao;Rivoli;Sao Bento;Clerigos;Se do Porto;Sao Bento;Aliados;
 3;Aliados;Livraria Lello;Clerigos;Palacio da Bolsa;Se do Porto;Aliados;
