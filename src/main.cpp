@@ -18,6 +18,112 @@
 
 using namespace std;
 
+
+//   2a PARTE DO TRABALHO
+void computePrefix(const string &pattern, int prefix[]) {
+	unsigned int length = pattern.length();
+	int k = -1;
+
+	prefix[0] = -1;
+
+	for (unsigned int i = 1; i < length; i++) {
+		while (k > -1 && tolower(pattern[k+1]) != tolower(pattern[i])) {
+			k = prefix[k];
+		}
+
+		if (tolower(pattern[k+1]) == tolower(pattern[i]))
+			k++;
+
+		prefix[i] = k;
+	}
+}
+
+int exactMatch(const string &text, const string pattern) {
+	int num = 0;
+	int prefix[pattern.length()];
+
+	computePrefix(pattern, prefix);
+
+	int q = -1;
+	for (unsigned int i = 0; i < text.length(); i++) {
+
+		while (q > -1 && tolower(pattern[q+1]) != tolower(text[i]))
+			q = prefix[q];
+
+		if (tolower(pattern[q+1]) == tolower(text[i]))
+			q++;
+
+		if (q == pattern.length() - 1) {
+			num++;
+			q = prefix[q];
+		}
+	}
+	//cout<<"exact match: "<< num << endl;
+	return num;
+}
+
+unsigned int editDistance(const string &pattern, const string &text) {
+	unsigned int distance[text.length()+1];
+	unsigned int oldDistance, newDistance;
+
+	for (unsigned int i = 0; i <= text.length(); i++)
+		distance[i] = i;
+
+	for (unsigned int i = 1; i <= pattern.length(); i++) {
+		oldDistance = distance[0];
+		distance[0] = i;
+
+		for (unsigned int j = 1; j <= text.length(); j++) {
+			//Check is not case sensitive
+			if (tolower(pattern[i-1]) == tolower(text[j-1]))
+				newDistance = oldDistance;
+			else {
+				newDistance = min(oldDistance, min(distance[j], distance[j-1]));
+				newDistance++;
+			}
+
+			oldDistance = distance[j];
+			distance[j] = newDistance;
+		}
+	}
+
+	return distance[text.length()];
+}
+
+int lookForRoute(string filename, string friendName){
+
+	ifstream fich(filename.c_str());
+	string line;
+	bool found= false;
+	int i=0;
+	if(!fich)
+	{
+		cout << "erro\n";
+	}
+
+
+	while(!fich.eof() && found != true){
+		getline(fich, line);
+
+		if(exactMatch(line, "Ribeira") !=0)
+		{
+			found=true;
+		}
+		else
+			i++;
+	}
+
+	if(i!=0){
+		i--;
+		//fleet[i].push_back(Passanger p1);
+	}
+
+	return i;
+
+}
+
+////////
+
 /**
  * @brief Reads the distances required to create the graph from a file and adds the correspondent
  * edges to the graph and to the graphviewer.
@@ -89,22 +195,26 @@ void readPointsOfInterest(vector<POI> &points, Graph &graph, GraphViewer &gv){
  * @brief Reads the passengers with the points of interest they want to visit from a file and marks those
  * points to visit them in the graph.
  */
-void readUsers(vector<POI> &pointsToVisit, vector<Passenger> &passengers,GraphViewer &gv, vector<Bus> fleet){
+void readUsers(vector<POI> &pointsToVisit, vector<Passenger> &passengers,GraphViewer &gv, vector<Bus> &fleet){
 	string line;
 	vector<POI> pois;
 	ifstream myfile("POI.txt");
 	if(myfile.is_open()){
 		while(getline(myfile, line)){
 			stringstream ss (line);
-			string poiName;
-			string user;
+			string poiName, user, bus;
 			getline(ss, user,';');
 			getline(ss,poiName, ';');
+			getline(ss,bus,';');
+			int busNumber = atoi(bus.c_str());
+			Bus newBus(busNumber);
+			fleet.push_back(newBus);
 			POI poi (poiName,true);
 			pois.push_back(poi);
 			Passenger p(user,poiName);
 			pointsToVisit.push_back(poi);
 			passengers.push_back(p);
+			fleet[busNumber].getPassengers().push_back(p);
 		}
 	}
 }
@@ -126,12 +236,38 @@ void checkVisitedPoints(vector<POI> &points, vector<POI> &pointsToVisit,GraphVie
  * @brief Creates a new passenger with a vector of points of interest to visit.
  */
 void newPassenger(vector<Passenger> &passengers, vector<POI> &points, vector<POI> &pointsToVisit, GraphViewer &gv){
-	string name, poi;
-	int numPois;
+	string name, poiName, friendName;
+	int numOption, index;
 	vector<POI> pois;
 	cout << "Qual é o nome do passageiro? " ; cin >> name;
-	cout << "Quantos pontos de interesse quer visitar?"; cin >> numPois;
-	cout << "Que pontos de interesse quer visitar?" << endl;
+	//cout << "Quantos pontos de interesse quer visitar?"; cin >> numPois;
+	cout << "Quer inserir-se na rota com um conhecido ou por Pontos de Interesse? (1 ou 2) " <<endl;
+	cin >>numOption;
+
+	if(numOption==1)
+	{
+		cout << "Indique o nome do seu amigo: " << endl;
+		cin >> friendName;
+		index = lookForRoute("BusPassengers.txt", friendName);
+
+		if(index!=-1){
+			passengers.push_back(name);
+		}
+	}
+
+	if(numOption==2){
+		cout << "Indique o nome do Ponto de Interesse: " << endl;
+		cin >> poiName;
+		index = lookForRoute("BusRoutes.txt", friendName);
+
+		if(index!=-1){
+			passengers.push_back(name);
+		}
+	}
+
+
+
+	/*
 	for(unsigned int i = 0; i < points.size(); i++){
 		cout << points[i].getName() << " " ;
 	}
@@ -147,10 +283,10 @@ void newPassenger(vector<Passenger> &passengers, vector<POI> &points, vector<POI
 				gv.rearrange();
 			}
 		}
-	}
+	} */
 
-	Passenger newPass(name,poi);
-	passengers.push_back(newPass);
+	//Passenger newPass(name,newPoi);
+	//passengers.push_back(newPass);
 }
 
 /**
@@ -222,6 +358,8 @@ void shortestPath(vector<POI> &pointsToVisit, vector<POI> &points, Graph &graph,
 	cout<< ".\nA distancia percorrida é " << distTotal << "km." << endl;
 }
 
+
+
 /**
  * @brief creates the graph viewer window.
  */
@@ -257,6 +395,7 @@ int menus(vector<Passenger> &passengers, vector<POI> &points, vector<POI> &point
 }
 
 int main() {
+
 	Bus bus = Bus();
 	Graph graph = Graph();
 	POI poi = POI();
@@ -274,13 +413,15 @@ int main() {
 	checkVisitedPoints(points,pointsToVisit,*gv);
 
 
-
 	do{
 	}while
 		(menus(passengers,points,pointsToVisit, graph,*gv)!= -1);
 	cout <<"Exit!" << endl;
 	exit(0);
+
+
 }
+
 
 
 

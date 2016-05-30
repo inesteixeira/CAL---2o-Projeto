@@ -6,6 +6,11 @@ Passenger::Passenger() {
 	this->id = id++;
 }
 
+Passenger::Passenger(string name) {
+	this->name = name;
+	this->id = id++;
+}
+
 Passenger::Passenger(string name, string pointOfInterest) {
 	this->name = name;
 	this->id = id++;

@@ -26,6 +26,7 @@ public:
 	/**
 	 * @brief Passenger constructor with the neccessary parameters.
 	 */
+	Passenger::Passenger(string name);
 	Passenger(string name,string pointOfInterest);
 	/**
 	 * @brief returns the name of the passenger.

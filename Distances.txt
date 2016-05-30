@@ -20,3 +20,4 @@ Ribeira;Igreja Santa Clara;1.4;
 Igreja Santa Clara;Ribeira;1.4;
 Clerigos;Se do Porto;0.550;
 Ribeira;Palacio da Bolsa;0.900;
+Se do Porto;Aliados;1.3;
