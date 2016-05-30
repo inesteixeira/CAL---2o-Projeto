@@ -360,7 +360,10 @@ void currentRoutes(vector<Bus> &fleet){
 	}
 }
 
+void writeToFile(vector<Bus> &fleet){
 
+
+}
 
 /**
  * @brief displays all the points of interest to visit.
@@ -466,6 +469,7 @@ int main() {
 	readUsers(pointsToVisit, passengers,*gv, fleet);
 	readBusPassengers(fleet);
 	readBusRoutes(fleet);
+	writeToFile(fleet);
 	updateEdges(*gv);
 
 
