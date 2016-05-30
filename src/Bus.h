@@ -11,6 +11,7 @@
 #include <vector>
 #include <string>
 #include "Passenger.h"
+#include "POI.h"
 
 
 using namespace std;
@@ -20,9 +21,8 @@ private:
 	int numMaxPassengers;
 	int numPassengers;
 	vector<Passenger> passengers;
-	string itinerary;
 	int id;
-	string listOfPassengers;
+	vector<POI> POIs;
 public:
 	/**
 	 * @brief Bus constructor.
@@ -60,9 +60,7 @@ public:
 	 */
 	vector<Passenger> getPassengers() const;
 
-	string getItinerary () ;
-
-	void setItinerary (string itinerary) ;
+	void addPOI(POI poi);
 };
 
 #endif /* BUS_H_ */

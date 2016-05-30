@@ -1,3 +1,3 @@
-1;Tomas;
-2;Ines;Ana;
-3;Pedro;Joao;
+1;Tomas;.;
+2;Ines;Ana;.;
+3;Pedro;Joao;.;

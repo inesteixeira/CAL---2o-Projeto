@@ -221,6 +221,63 @@ void readUsers(vector<POI> &pointsToVisit, vector<Passenger> &passengers,GraphVi
 /**
  * @brief verify from all the existent points of interest each ones are to visit.
  */
+
+void readBusRoutes (vector<Bus> &fleet ){
+	string line;
+	ifstream myfile("BusRoutes.txt");
+	if(myfile.is_open()){
+			while(getline(myfile, line)){
+				stringstream ss (line);
+				string poiName;
+				string id;
+				getline(ss,id,';');
+				double id1 = atof(id.c_str());
+				Bus bus(id1);
+				getline(ss,poiName,';');
+				POI poi(poiName,true);
+				bus.addPOI(poi);
+				do{
+					getline(ss,poiName,';');
+					POI poi(poiName,true);
+					bus.addPOI(poi);
+
+				}while(poiName != "Aliados");
+
+				fleet.push_back(bus);
+			}
+			}
+}
+
+void readBusPassengers(vector<Bus> &fleet ){string line;
+ifstream myfile("BusPassengers.txt");
+if(myfile.is_open()){
+		while(getline(myfile, line)){
+			stringstream ss (line);
+			string name;
+			string id;
+			getline(ss,id,';');
+			double id1 = atof(id.c_str());
+			Bus bus(id1);
+			while(name != "."){
+
+
+			getline(ss,name,';');
+			if(name == ".")
+				break;
+			Passenger passenger(name);
+			bus.addPassenger(passenger);
+			cout << name << endl;
+			}
+
+
+
+			fleet.push_back(bus);
+
+		}
+
+		}
+
+}
 void checkVisitedPoints(vector<POI> &points, vector<POI> &pointsToVisit,GraphViewer &gv){
 	for(unsigned int i = 0; i < points.size(); i++){
 		for(unsigned int j = 0; j< pointsToVisit.size(); j++){
@@ -399,7 +456,7 @@ int menus(vector<Passenger> &passengers, vector<POI> &points, vector<POI> &point
 }
 
 int main() {
-
+ /*
 	Bus bus = Bus();
 	Graph graph = Graph();
 	POI poi = POI();
@@ -421,7 +478,9 @@ int main() {
 	}while
 		(menus(passengers,points,pointsToVisit, graph,*gv)!= -1);
 	cout <<"Exit!" << endl;
-	exit(0);
+	exit(0);*/
+	vector<Bus> fleet;
+	readBusPassengers(fleet);
 
 
 }

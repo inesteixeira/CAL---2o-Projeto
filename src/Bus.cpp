@@ -12,8 +12,7 @@ Bus::Bus() {
 Bus::Bus(int numMaxPassengers) {
 	this->numMaxPassengers = numMaxPassengers;
 	this->numPassengers = 0;
-	this->itinerary = "";
-	this->listOfPassengers= "";
+
 	this->id = id++;
 }
 
@@ -29,8 +28,7 @@ void Bus::addPassenger(Passenger passenger) {
 	passengers.push_back(passenger);
 	numPassengers++;
 	string tmp;
-	tmp = this->listOfPassengers + " " + passenger.getName();
-	this->listOfPassengers = tmp ;
+
 }
 
 int Bus::getNumMaxPassengers() const {
@@ -44,16 +42,6 @@ int Bus::getNumPassengers() const {
 void Bus::setNumPasengers(int newPassengers) {
 	newPassengers = numPassengers;
 }
-
-string Bus::getItinerary() {
-	return itinerary;
-}
-
-void Bus::setItinerary(string itineray){
-	string tmp;
-	tmp = this->itinerary + " " + itinerary;
-	this->itinerary = tmp ;
-}
 //std::string operator==() {
 //	return std::string();
 //}
@@ -65,3 +53,6 @@ void Bus::setItinerary(string itineray){
 //		}
 //	}
 //}
+void Bus::addPOI(POI poi){
+	POIs.push_back(poi);
+}
